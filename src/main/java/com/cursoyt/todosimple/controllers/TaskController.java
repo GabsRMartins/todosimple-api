@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/task")
@@ -19,6 +20,14 @@ public class TaskController {
 
     @Autowired
     private TaskServices taskServices;
+
+
+    @GetMapping("/{user_id}")
+    public  ResponseEntity<List<Task>> findByUserId(@PathVariable Long userId){
+        List<Task> OBJ = this.taskServices.findAllById(userId);
+        return  ResponseEntity.ok().body(OBJ);
+
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Task> findById(@PathVariable Long id){
