@@ -2,6 +2,7 @@ package com.cursoyt.todosimple.models;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 
@@ -81,7 +82,7 @@ public class User {
         this.password = password;
     }
 
-
+    @JsonIgnore
     public List<Task> getTasks() {
         return tasks;
     }
