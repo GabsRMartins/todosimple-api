@@ -3,6 +3,7 @@ package com.cursoyt.todosimple.controllers;
 
 import com.cursoyt.todosimple.models.Task;
 import com.cursoyt.todosimple.services.TaskServices;
+import com.cursoyt.todosimple.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,10 +22,14 @@ public class TaskController {
     @Autowired
     private TaskServices taskServices;
 
+    @Autowired
+    private UserServices userServices;
 
-    @GetMapping("/{user_id}")
-    public  ResponseEntity<List<Task>> findByUserId(@PathVariable Long userId){
-        List<Task> OBJ = this.taskServices.findAllById(userId);
+
+    @GetMapping("/user/{user_id}")
+    public  ResponseEntity<List<Task>> findByUserId(@PathVariable Long user_id){
+        this.userServices.findById(user_id);
+        List<Task> OBJ = this.taskServices.findAllById(user_id);
         return  ResponseEntity.ok().body(OBJ);
 
     }
