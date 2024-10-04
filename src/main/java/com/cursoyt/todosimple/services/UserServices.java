@@ -4,6 +4,8 @@ package com.cursoyt.todosimple.services;
 import com.cursoyt.todosimple.models.User;
 import com.cursoyt.todosimple.repositories.TaskRepository;
 import com.cursoyt.todosimple.repositories.UserRepository;
+import com.cursoyt.todosimple.services.exceptions.DataBindingViolationException;
+import com.cursoyt.todosimple.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ public class UserServices {
 
     public User findById(Long id){
         Optional<User> user = this.userRepository.findById(id);
-        return user.orElseThrow( () -> new RuntimeException(
+        return user.orElseThrow( () -> new ObjectNotFoundException(
                 "Usuário não encontrado!Id: " + id + "Tipo: " + User.class.getName()
         ));
     }
@@ -50,7 +52,7 @@ public class UserServices {
             this.userRepository.deleteById(id);
         }
         catch(Exception e){
-            throw  new RuntimeException("Não é possivel excluir pois há entidades relacionadas");
+            throw  new DataBindingViolationException("Não é possivel excluir pois há entidades relacionadas");
         }
     }
 }

@@ -3,6 +3,7 @@ package com.cursoyt.todosimple.services;
 import com.cursoyt.todosimple.models.Task;
 import com.cursoyt.todosimple.models.User;
 import com.cursoyt.todosimple.repositories.TaskRepository;
+import com.cursoyt.todosimple.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class TaskServices {
 
     public Task findById(Long id){
         Optional<Task> task =  this.taskRepository.findById(id);
-        return task.orElseThrow( () -> new RuntimeException(
+        return task.orElseThrow( () -> new ObjectNotFoundException(
                 "Tarefa não encontrada!Id: " + id + "Tipo: " + Task.class.getName()
         ));
     }
