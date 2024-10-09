@@ -1,10 +1,13 @@
 package com.cursoyt.todosimple.config;
 
 
+import com.cursoyt.todosimple.security.JWTAuthenticationFilter;
 import com.cursoyt.todosimple.security.JWTUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -48,27 +51,29 @@ public class SecurityConfig {
     };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        httpSecurity.cors().and().csrf().disable();
+        http.cors().and().csrf().disable();
 
-        AuthenticationManagerBuilder authenticationManagerBuilder= httpSecurity
+        AuthenticationManagerBuilder authenticationManagerBuilder = http
                 .getSharedObject(AuthenticationManagerBuilder.class);
-
         authenticationManagerBuilder.userDetailsService(this.userDetailsService)
                 .passwordEncoder(bCryptPasswordEncoder());
-
         this.authenticationManager = authenticationManagerBuilder.build();
 
-        httpSecurity.authorizeRequests()
+        http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                 .antMatchers(PUBLIC_MATCHERS).permitAll()
-                .anyRequest().authenticated()
-        ;
+                .anyRequest().authenticated().and()
+                .authenticationManager(authenticationManager);
 
-        httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilter(new JWTAuthenticationFilter(this.authenticationManager, this.jwtUtil));
 
-        return httpSecurity.build();
+
+
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        return http.build();
     }
 
         @Bean
@@ -82,7 +87,8 @@ public class SecurityConfig {
 
         @Bean
         public BCryptPasswordEncoder bCryptPasswordEncoder() {
-            return new BCryptPasswordEncoder();
+
+        return new BCryptPasswordEncoder();
         }
 
 
