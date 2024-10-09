@@ -2,6 +2,7 @@ package com.cursoyt.todosimple.config;
 
 
 import com.cursoyt.todosimple.security.JWTAuthenticationFilter;
+import com.cursoyt.todosimple.security.JWTAuthorizationFilter;
 import com.cursoyt.todosimple.security.JWTUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,7 @@ public class SecurityConfig {
                 .authenticationManager(authenticationManager);
 
         http.addFilter(new JWTAuthenticationFilter(this.authenticationManager, this.jwtUtil));
+        http.addFilter(new JWTAuthorizationFilter(this.authenticationManager, this.jwtUtil, this.userDetailsService));
 
 
 
